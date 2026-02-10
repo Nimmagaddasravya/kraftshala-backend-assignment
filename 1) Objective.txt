@@ -1,0 +1,291 @@
+1) Objective
+Purpose
+
+The goal of this assignment is to assess your backend development fundamentals, problem-solving ability, and code structure practices.
+
+What you will build
+
+You will develop a calendar scheduling backend service that enables users to book meetings while strictly preventing overlapping time slots.
+
+The system must expose REST APIs for:
+
+User management
+
+Meeting scheduling
+
+Conflict detection and validation
+
+2) Technology Requirements
+Mandatory Stack
+
+You must use the following technologies:
+
+Node.js
+
+JavaScript
+
+Express.js
+
+Sequelize ORM
+
+Database
+
+SQL database (PostgreSQL / MySQL / SQLite)
+
+MongoDB is allowed, but Sequelize is best suited for SQL databases
+
+Note: Using Sequelize with a SQL database is strongly recommended for clarity and correctness.
+
+3) Functional Requirements
+User Management APIs
+
+Create User
+POST /users
+
+Get User by ID
+GET /users/:id
+
+Meeting Management APIs
+
+Create Meeting
+POST /meetings
+
+List Meetings
+GET /meetings
+Optional filters:
+
+by userId
+
+by date range (startDate, endDate)
+
+Get Meeting by ID
+GET /meetings/:id
+
+Update Meeting
+PUT /meetings/:id
+
+Delete Meeting
+DELETE /meetings/:id
+
+4) Mandatory Business Rules
+Meeting Conflict Rule
+
+The system must reject overlapping meetings.
+
+A conflict exists when:
+
+existing.startTime < new.endTime
+
+AND
+
+existing.endTime > new.startTime
+
+If a conflict is found, the API must return:
+
+HTTP Status: 400 Bad Request
+
+Message: "Time slot already booked"
+
+This rule must be enforced during both meeting creation and update.
+
+5) Validation Rules
+
+The following validations are required:
+
+startTime must be earlier than endTime
+
+All mandatory fields must be validated
+
+Errors must include clear and meaningful messages
+
+HTTP Status Code Guidelines
+Scenario	Status Code
+Resource created successfully	201
+Data fetched / updated successfully	200
+Resource deleted successfully	204
+Validation or business rule failure	400
+Resource not found	404
+6) Database Design Expectations
+
+You are intentionally not provided a schema. You are expected to:
+
+Design tables
+
+Define relationships
+
+Create migrations
+
+Add indexes and constraints where appropriate
+
+Suggested Tables
+Users Table
+
+id (Primary Key)
+
+name (required)
+
+email (required, unique)
+
+createdAt
+
+updatedAt
+
+Indexes
+
+Unique index on email
+
+Meetings Table
+
+id (Primary Key)
+
+userId (Foreign Key → users.id)
+
+title (required)
+
+startTime (datetime, required)
+
+endTime (datetime, required)
+
+createdAt
+
+updatedAt
+
+Indexes
+
+(userId, startTime)
+
+(startTime, endTime) (optional, for performance)
+
+Relationships
+
+One user can have multiple meetings
+
+Sequelize associations:
+
+User.hasMany(Meeting)
+
+Meeting.belongsTo(User)
+
+Overlap checks should generally be applied per user, unless you design a global calendar system.
+
+7) Required Project Structure
+
+Your project must follow this structure:
+
+src/
+  modules/
+    meeting/
+      index/
+      interface/
+      dto/
+      model/
+      service/
+      routes/
+    user/
+      index/
+      interface/
+      dto/
+      model/
+      service/
+      routes/
+  middlewares/
+  config/
+  utils/
+  app.js
+  server.js
+
+Folder Responsibilities
+
+routes/ – Express route definitions
+
+interface/ – Controllers (request/response handling)
+
+service/ – Core business logic
+
+model/ – Sequelize model definitions
+
+dto/ – Request validation logic
+
+middlewares/ – Error handling, auth (optional)
+
+config/ – Environment & DB configuration
+
+utils/ – Reusable helpers
+
+8) Meeting API Example
+Create Meeting Request
+
+POST /meetings
+
+{
+  "userId": 1,
+  "title": "Team Discussion",
+  "startTime": "2026-02-10T10:00:00.000Z",
+  "endTime": "2026-02-10T10:30:00.000Z"
+}
+
+9) Bonus Features (Optional)
+
+You may implement any of the following if time permits:
+
+JWT-based authentication
+
+Pagination for listing meetings
+
+Unit tests
+
+Soft delete functionality
+
+Request logging
+
+Rate limiting
+
+Caching
+
+Optional features should be implemented cleanly. Partial or broken implementations may negatively affect evaluation.
+
+10) Evaluation Criteria
+
+Your submission will be evaluated based on:
+
+Code quality and readability
+
+Understanding of Node.js and JavaScript
+
+Proper usage of Sequelize ORM
+
+Database design decisions
+
+REST API design
+
+Correct enforcement of business rules
+
+Clean and modular architecture
+
+11) Submission Instructions
+
+You must submit:
+
+Public GitHub repository containing the full source code
+
+README.md file explaining setup, APIs, and usage
+
+Short demo video showing:
+
+APIs working
+
+Conflict rejection in action
+
+Brief code walkthrough
+
+Submit the GitHub link + video link in the provided form
+
+12) Final Note
+
+You are encouraged to:
+
+Use official documentation
+
+Refer to StackOverflow and learning resources
+
+Focus on clarity and correctness
